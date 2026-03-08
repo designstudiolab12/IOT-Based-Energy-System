@@ -1,109 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>DINESH Energy Meter</title>
 
-<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-<!-- Chart.js for Graph -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4fbff;
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4fbff;
 }
 
-header {
-    background: #0d6efd;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
+header{
+background:#0d6efd;
+color:white;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
 }
 
-.container {
-    padding: 20px;
+.container{
+padding:20px;
 }
 
-.section {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+.section{
+background:white;
+border-radius:12px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
 }
 
-.section h2 {
-    margin-top: 0;
-    color: #0d6efd;
+.section h2{
+margin-top:0;
+color:#0d6efd;
 }
 
-.value {
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 10px;
+.value{
+font-size:28px;
+font-weight:bold;
+margin-top:10px;
 }
 
-.bill {
-    font-size: 32px;
-    color: green;
-    font-weight: bold;
+.bill{
+font-size:32px;
+color:green;
+font-weight:bold;
 }
 
-.login-box {
-    max-width: 400px;
-    margin: 80px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.login-box{
+max-width:400px;
+margin:80px auto;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background: #0d6efd;
-    color: white;
-    border: none;
-    cursor: pointer;
+button{
+width:100%;
+padding:10px;
+background:#0d6efd;
+color:white;
+border:none;
+cursor:pointer;
 }
 
-canvas {
-    max-width: 100%;
+canvas{
+max-width:100%;
 }
 
-footer {
-    text-align: center;
-    padding: 10px;
-    background: #e9ecef;
+footer{
+text-align:center;
+padding:10px;
+background:#e9ecef;
 }
+
 </style>
+
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
 <div id="loginPage" class="login-box">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+
+<h2>Login</h2>
+
+<input type="text" id="username" placeholder="Username">
+
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
 </div>
 
-<!-- DASHBOARD -->
+
 <div id="dashboard" style="display:none;">
 
 <header>
@@ -112,30 +119,40 @@ Smart Electricity Usage & Billing Dashboard
 
 <div class="container">
 
-    <div class="section">
-        <h2>Live Electricity Usage (Today)</h2>
-        <div class="value" id="liveUnits">0 Units</div>
-    </div>
+<div class="section">
+<h2>Live Electricity Usage (Today)</h2>
+<div class="value" id="liveUnits">0 Units</div>
+</div>
 
-    <div class="section">
-        <h2>Weekly Consumption</h2>
-        <div class="value" id="weeklyUnits">0 Units</div>
-    </div>
+<div class="section">
+<h2>Weekly Consumption</h2>
+<div class="value" id="weeklyUnits">0 Units</div>
+</div>
 
-    <div class="section">
-        <h2>Monthly Consumption</h2>
-        <div class="value" id="monthlyUnits">0 Units</div>
-    </div>
+<div class="section">
+<h2>Monthly Consumption</h2>
+<div class="value" id="monthlyUnits">0 Units</div>
+</div>
 
-    <div class="section">
-        <h2>Monthly Electricity Bill</h2>
-        <div class="bill" id="billAmount">₹0</div>
-    </div>
+<div class="section">
+<h2>Today's Electricity Cost</h2>
+<div class="bill" id="todayBill">₹0</div>
+</div>
 
-    <div class="section">
-        <h2>Usage Graph</h2>
-        <canvas id="usageChart"></canvas>
-    </div>
+<div class="section">
+<h2>Running Monthly Bill</h2>
+<div class="bill" id="runningBill">₹0</div>
+</div>
+
+<div class="section">
+<h2>Final Monthly Bill</h2>
+<div class="bill" id="billAmount">₹0</div>
+</div>
+
+<div class="section">
+<h2>Usage Graph</h2>
+<canvas id="usageChart"></canvas>
+</div>
 
 </div>
 
@@ -145,95 +162,176 @@ IoT Based Electricity Monitoring System
 
 </div>
 
+
 <script>
 
-// ---------------- LOGIN ----------------
 function login(){
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
 
-    if(user === "Dineshc" && pass === "1497"){
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-    }
-    else{
-        alert("Invalid login");
-    }
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+if(user==="admin" && pass==="1234"){
+
+document.getElementById("loginPage").style.display="none";
+document.getElementById("dashboard").style.display="block";
+
 }
 
-// ---------------- FIREBASE CONFIG ----------------
-// Replace with your Firebase config
+else{
+
+alert("Invalid Login");
+
+}
+
+}
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDw6ue8f2VQPLY-SfYSjQ-8wOXPCSDy7So",
-  authDomain: "dinesh-ebs-system.firebaseapp.com",
-  databaseURL: "https://dinesh-ebs-system-default-rtdb.firebaseio.com",
-  projectId: "dinesh-ebs-system",
-  storageBucket: "dinesh-ebs-system.firebasestorage.app",
-  messagingSenderId: "544411717146",
-  appId: "1:544411717146:web:0e1d121c3f5e49ba4a4ba3",
-  measurementId: "G-5GHQ3VFX7L"
+
+apiKey: "AIzaSyDw6ue8f2VQPLY-SfYSjQ-8wOXPCSDy7So",
+authDomain: "dinesh-ebs-system.firebaseapp.com",
+databaseURL: "https://dinesh-ebs-system-default-rtdb.firebaseio.com",
+projectId: "dinesh-ebs-system",
+storageBucket: "dinesh-ebs-system.firebasestorage.app",
+messagingSenderId: "544411717146",
+appId: "1:544411717146:web:0e1d121c3f5e49ba4a4ba3"
+
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
-// ---------------- TARIFF ----------------
-function calculateBill(units) {
-    let amount = 0;
-    if(units <= 100) amount = units * 1.5;
-    else if(units <= 200) amount = units * 2.5;
-    else amount = units * 4;
-    return amount.toFixed(2);
+const db=firebase.database();
+
+
+function calculateBill(units){
+
+let amount=0;
+
+if(units<=100){
+
+amount=units*1.5;
+
 }
 
-// ---------------- LIVE DATA FETCH ----------------
+else if(units<=200){
+
+amount=units*2.5;
+
+}
+
+else{
+
+amount=units*4;
+
+}
+
+return amount.toFixed(2);
+
+}
+
+
 function fetchData(){
-    db.ref("Electricity").on("value", (snapshot)=>{
-        const data = snapshot.val();
 
-        let live = data.live;
-        let weekly = data.weekly;
-        let monthly = data.monthly;
+db.ref("Electricity").on("value",function(snapshot){
 
-        document.getElementById("liveUnits").innerText = live + " Units";
-        document.getElementById("weeklyUnits").innerText = weekly + " Units";
-        document.getElementById("monthlyUnits").innerText = monthly + " Units";
-        document.getElementById("billAmount").innerText = "₹ " + calculateBill(monthly);
+const data=snapshot.val()||{};
 
-        // graph irundha mattum call aagum
-        if(data.history){
-            updateGraph(data.history);
-        }
-    });
+let live=data.live||0;
+let weekly=data.weekly||0;
+let monthly=data.monthly||0;
+
+document.getElementById("liveUnits").innerText=live+" Units";
+document.getElementById("weeklyUnits").innerText=weekly+" Units";
+document.getElementById("monthlyUnits").innerText=monthly+" Units";
+
+
+let todayBill=calculateBill(live);
+let runningBill=calculateBill(monthly);
+
+document.getElementById("todayBill").innerText="₹ "+todayBill;
+document.getElementById("runningBill").innerText="₹ "+runningBill;
+document.getElementById("billAmount").innerText="₹ "+runningBill;
+
+
+if(data.history){
+
+updateGraph(data.history);
+
+}
+
+});
+
 }
 
 
-// ---------------- GRAPH ----------------
 let chart;
+
 function updateGraph(historyData){
-    const ctx = document.getElementById('usageChart');
 
-    if(chart) chart.destroy();
+const ctx=document.getElementById("usageChart");
 
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: historyData.days,
-            datasets: [{
-                label: 'Daily Units',
-                data: historyData.units
-            }]
-        }
-    });
+if(chart){
+
+chart.destroy();
+
 }
 
-// ---------------- AUTO REFRESH 24HR LOGIC ----------------
-setInterval(fetchData, 5000); // every 5 sec for demo
+chart=new Chart(ctx,{
+type:"line",
+data:{
+labels:historyData.days,
+datasets:[{
+label:"Daily Units",
+data:historyData.units
+}]
+}
+});
+
+}
+
+
+function checkReset(){
+
+const now=new Date();
+
+let hour=now.getHours();
+let minute=now.getMinutes();
+let day=now.getDay();
+let date=now.getDate();
+
+
+if(hour===23 && minute===59){
+
+db.ref("Electricity/live").set(0);
+
+}
+
+
+if(day===6 && hour===23 && minute===59){
+
+db.ref("Electricity/weekly").set(0);
+
+}
+
+
+let lastDay=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+
+if(date===lastDay && hour===23 && minute===59){
+
+db.ref("Electricity/monthly").set(0);
+
+}
+
+}
+
+
+setInterval(fetchData,5000);
+
+setInterval(checkReset,60000);
 
 fetchData();
 
 </script>
-
 
 </body>
 </html>
