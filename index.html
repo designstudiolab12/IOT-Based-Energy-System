@@ -232,7 +232,7 @@ return amount.toFixed(2);
 
 function fetchData(){
 
-db.ref("Electricity").on("value",function(snapshot){
+db.ref("energyData").on("value",function(snapshot){
 
 const data=snapshot.val()||{};
 
